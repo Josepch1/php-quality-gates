@@ -59,9 +59,10 @@ rule.
 ## Why mutation testing
 
 Coverage says which lines ran. It does not say whether anything would have
-noticed if those lines were wrong. Infection edits the source on purpose, flips a
-`<` to `<=`, returns an empty array instead of the real one, and reruns the
-suite. Every edit that survives is a line your tests execute but do not check.
+noticed if those lines were wrong. Mutation testing edits the source on purpose,
+flips a `<` to `<=`, returns an empty array instead of the real one, and reruns
+the suite. Every edit that survives is a line your tests execute but do not
+check.
 
 It is slower than the rest and it is the gate that finds the tests worth having.
 
@@ -91,6 +92,12 @@ list `types` explicitly and check the report is not suspiciously empty.
 **Pest and `$this` in `beforeEach`.** Sharing setup through `$this->something`
 means PHPStan sees an undefined property on `TestCase`. Building the graph inside
 each test costs a few lines and keeps the analyser useful.
+
+**Infection does not drive Pest.** Infection only knows how to launch phpunit,
+phpspec or codeception, and `vendor/bin/phpunit` refuses to run in a Pest project
+at all. If you have both in `require-dev`, `infection` fails the moment CI reaches
+it. Pest 3 does mutation testing itself with `pest --mutate`, which is what this
+repo uses.
 
 ## Licence
 

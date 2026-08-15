@@ -48,5 +48,3 @@ jobs:
       # whose tests are already failing.
       - name: Mutation testing
         run: composer run test:mutation
-        env:
-          INFECTION_DASHBOARD_API_KEY: ''
