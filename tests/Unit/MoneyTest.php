@@ -37,6 +37,12 @@ it('multiplies by a whole factor', function (): void {
     expect(Money::of(250, 'BRL')->multipliedBy(4)->amountInCents)->toBe(1000);
 });
 
+it('multiplies by zero', function (): void {
+    // Found by mutation testing: `$factor < 0` survived being rewritten as
+    // `<= 0` and as `< 1`, because nothing here ever multiplied by zero.
+    expect(Money::of(250, 'BRL')->multipliedBy(0)->isZero())->toBeTrue();
+});
+
 it('refuses a negative factor', function (): void {
     Money::of(250, 'BRL')->multipliedBy(-1);
 })->throws(InvalidArgumentException::class, 'Cannot multiply money by a negative factor.');
