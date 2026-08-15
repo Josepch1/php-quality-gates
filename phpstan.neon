@@ -1,0 +1,21 @@
+parameters:
+    paths:
+        - src
+        - tests
+
+    level: 9
+
+    excludePaths:
+        analyse:
+            # Pest's arch() returns a fluent PendingCalls\TestCall that PHPStan
+            # cannot model, so every expectation reads as a call to an undefined
+            # method. The rules in there are checked by running them, not by
+            # analysing them. This is the only exclusion, and it is scoped to one
+            # directory rather than to the whole test suite.
+            - tests/Architecture
+
+    # No baseline file. A baseline hides today's problems behind a number nobody
+    # revisits, and this project is small enough to keep at zero.
+    ignoreErrors: []
+
+    treatPhpDocTypesAsCertain: false

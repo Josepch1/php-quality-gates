@@ -1,0 +1,7 @@
+/vendor/
+/build/
+/.phpunit.cache/
+.php-cs-fixer.cache
+.phpunit.result.cache
+infection.log
+.deptrac.cache

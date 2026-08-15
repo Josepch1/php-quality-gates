@@ -1,0 +1,70 @@
+parameters:
+    # Without an explicit `analyser` node, Deptrac 2 never applies the defaults
+    # for it and DependsOnInternalToken reads a missing `internal_tag` key,
+    # printing a PHP warning on every run. Declaring the node is enough.
+    analyser:
+        internal_tag: null
+        # `types` has to be repeated even though these are Deptrac's own
+        # defaults. Declaring the `analyser` node stops the defaults being
+        # applied to its siblings, and an empty `types` makes Deptrac analyse
+        # nothing while still reporting a green build.
+        types:
+            - class
+            - function
+
+    paths:
+        - ./src
+
+    layers:
+        - name: Domain
+          collectors:
+              - type: directory
+                value: src/Modules/[^/]+/Domain/.*
+
+        - name: Application
+          collectors:
+              - type: directory
+                value: src/Modules/[^/]+/Application/.*
+
+        - name: Infrastructure
+          collectors:
+              - type: directory
+                value: src/Modules/[^/]+/Infrastructure/.*
+
+        - name: Http
+          collectors:
+              - type: directory
+                value: src/Modules/[^/]+/Http/.*
+
+        - name: Shared
+          collectors:
+              - type: directory
+                value: src/Shared/.*
+
+    # Read this as "may depend on". Domain sits at the bottom and knows about
+    # Shared only. Infrastructure is allowed to know everything because it is the
+    # layer that wires the others to the outside world.
+    ruleset:
+        Domain:
+            - Shared
+
+        Application:
+            - Domain
+            - Shared
+
+        Infrastructure:
+            - Application
+            - Domain
+            - Shared
+
+        Http:
+            - Application
+            - Domain
+            - Shared
+
+        Shared: ~
+
+    # Deliberate exceptions go here, one entry per violation, each with the reason
+    # written above it. An empty list is not a goal in itself, but every line in it
+    # has to earn its place.
+    skip_violations: []

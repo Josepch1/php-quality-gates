@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: Quality gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          # pcov, because mutation testing needs line coverage and it is roughly
+          # an order of magnitude faster than Xdebug for this.
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
+
+      - name: Formatting
+        run: composer run lint:check
+
+      - name: Static analysis
+        run: composer run stan
+
+      - name: Layer boundaries
+        run: composer run arch
+
+      - name: Tests
+        run: composer run test:coverage
+
+      # Runs last: it is the slowest gate and there is no point mutating code
+      # whose tests are already failing.
+      - name: Mutation testing
+        run: composer run test:mutation
+        env:
+          INFECTION_DASHBOARD_API_KEY: ''

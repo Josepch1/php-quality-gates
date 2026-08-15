@@ -1,0 +1,57 @@
+{
+    "name": "josepch1/php-quality-gates",
+    "description": "A small layered PHP module wired to the quality gates I run on real projects: enforced layer boundaries, static analysis at level 8, architecture tests and mutation testing.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4"
+    },
+    "require-dev": {
+        "deptrac/deptrac": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "infection/infection": "^0.29",
+        "pestphp/pest": "^3.7",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "phpstan/phpstan": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "infection/extension-installer": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix",
+        "lint:check": "php-cs-fixer fix --dry-run --diff",
+        "stan": "phpstan analyse --memory-limit=512M",
+        "arch": "deptrac analyse --report-uncovered --fail-on-uncovered",
+        "test": "pest",
+        "test:arch": "pest --group=arch",
+        "test:coverage": "pest --coverage --min=90",
+        "test:mutation": "infection --threads=max --show-mutations",
+        "check": [
+            "@lint:check",
+            "@stan",
+            "@arch",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "arch": "Fail the build when a layer imports something it is not allowed to.",
+        "check": "Everything CI runs, minus mutation testing, which needs a coverage driver.",
+        "test:mutation": "Change the code on purpose and check the tests notice."
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
