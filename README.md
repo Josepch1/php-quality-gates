@@ -1,5 +1,7 @@
 # php-quality-gates
 
+[![CI](https://github.com/Josepch1/php-quality-gates/actions/workflows/ci.yml/badge.svg)](https://github.com/Josepch1/php-quality-gates/actions/workflows/ci.yml)
+
 A small PHP module wired to the checks I run on real projects. The domain here is
 deliberately boring, an invoice that can be issued and paid, because the point is
 not the feature. The point is what happens when you try to write it badly.
@@ -65,6 +67,14 @@ the suite. Every edit that survives is a line your tests execute but do not
 check.
 
 It is slower than the rest and it is the gate that finds the tests worth having.
+It earned its place here straight away: the guard in `Money::multipliedBy` was
+rewritten from `$factor < 0` to `<= 0` and to `< 1`, and the suite passed both
+times, because nothing had ever multiplied by zero.
+
+The score sits at 98% with one survivor left, a `?->` in the controller that
+cannot be reached while every invoice arriving there has already been issued.
+Chasing it would mean writing a test for a state the type system already rules
+out, so it stays and this paragraph is the reason why.
 
 ## Exceptions
 
