@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use App\Modules\Billing\Domain\Money;
 
+// Ties this file to the class it is responsible for, so mutation testing knows
+// which source to attack and the score means something per unit.
+covers(Money::class);
+
 it('keeps the amount in cents and upper-cases the currency', function (): void {
     $money = Money::of(1050, 'brl');
 

@@ -7,6 +7,9 @@ use App\Modules\Billing\Domain\Invoice;
 use App\Modules\Billing\Domain\InvoiceStatus;
 use App\Modules\Billing\Domain\Money;
 
+covers(Invoice::class);
+covers(InvalidInvoiceTransition::class);
+
 function draftInvoice(int $cents = 1000): Invoice
 {
     return new Invoice('INV-1', Money::of($cents, 'BRL'));

@@ -8,6 +8,10 @@ use App\Modules\Billing\Http\IssueInvoiceController;
 use App\Modules\Billing\Infrastructure\InMemoryInvoiceRepository;
 use Tests\Support\FrozenClock;
 
+covers(IssueInvoice::class);
+covers(IssueInvoiceController::class);
+covers(InMemoryInvoiceRepository::class);
+
 /**
  * Each test builds its own graph. Sharing it through `$this` in beforeEach saves
  * four lines and costs a static analyser that can no longer tell what type
